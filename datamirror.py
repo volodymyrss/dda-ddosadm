@@ -13,8 +13,14 @@ def ensure_data(kind="any",scw=None):
         return ensure_data(kind="nrt",scw=scw)
 
     
+    scw=scw[:12]
+    if kind=="cons":
+        scw=scw+".001"
+    if kind=="nrt":
+        scw=scw+".000"
+    
     tf = tempfile.NamedTemporaryFile(delete=False)
-    cmd="filelist=%s data_kind=%s sh download.sh %s %s"%(tf.name,kind,scw[:4],scw)
+    cmd="filelist=%s data_kind=%s download_data.sh %s %s"%(tf.name,kind,scw[:4],scw)
     print("command:",cmd)
     os.system(cmd)
 
