@@ -9,7 +9,7 @@ data_kind=${data_kind:-cons}
 
 echo "requested: rev: $rev scw: $scw"
 
-secret=`cat .secret`
+secret=`cat /home/integral/.secret`
 
 if [ "$data_kind" == "nrt" ]; then
 
