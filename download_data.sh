@@ -33,8 +33,9 @@ if [ "$data_kind" == "nrt" ]; then
 
     mkdir -p $scw_data_root/../aux/adp
     cd $scw_data_root/../aux/adp
+    chmod +w .
 
-    wget -m -nH --cut-dirs=7 ftp://$secret@isdcarc.unige.ch/arc/FTP/arc_distr/NRT/public/aux/adp/$rev*
+    wget -m -nH --cut-dirs=7 ftp://$secret@isdcarc.unige.ch/arc/FTP/arc_distr/NRT/public/aux/adp/${rev}.000
 
 
     echo "Download of data from revolution ${rev} finished"
@@ -67,8 +68,12 @@ else
 
     mkdir -p $local_data_root/aux/adp                                                                                                                                                  
     cd $local_data_root/aux/adp                                                                                                                                                  
+    chmod +w .
 
-    wget -m -nH --cut-dirs=4 ftp://$secret@isdcarc.unige.ch/arc/rev_3/aux/adp/$rev*     
+    ls -ld .
+
+    #wget -m -nH --cut-dirs=4 ftp://$secret@isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
+    wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
 
     echo "Download of data from revolution ${rev} finished"
     echo "-------------------------------------------------------"
