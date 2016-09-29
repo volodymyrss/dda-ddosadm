@@ -13,7 +13,7 @@ secret=`cat /home/integral/.secret`
 
 if [ "$data_kind" == "nrt" ]; then
 
-    scw_data_root="$local_data_root/nrt/scw/"
+    scw_data_root="$local_data_root/scw/"
     remote_data_root="pvphase/nrt/ops/scw/"
 
     mkdir -p $scw_data_root
@@ -44,7 +44,7 @@ if [ "$data_kind" == "nrt" ]; then
 else
     echo "Data will be downloaded in:"
 
-    scw_data_root=$local_data_root/rev_3/scw/
+    scw_data_root=$local_data_root/scw/
     mkdir -p $scw_data_root
     cd $scw_data_root
     pwd
