@@ -29,12 +29,14 @@ if [ "$data_kind" == "nrt" ]; then
     cd $scw_data_root/$rev
     #chmod -R +w $data_dir/$rev
 
-    wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
+    wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
+    wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
     mkdir -p $scw_data_root/../aux/adp
     cd $scw_data_root/../aux/adp
     chmod +w .
 
+    echo "will get revdir..."
     wget -m -nH --cut-dirs=7 ftp://$secret@isdcarc.unige.ch/arc/FTP/arc_distr/NRT/public/aux/adp/${rev}.000
 
 
@@ -60,6 +62,7 @@ else
 
     pwd
 
+    wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
     wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
     #wget -m -nH --cut-dirs=5 ftp://isdcarc.unige.ch/arc/FTP/arc_distr/CONS/public/scw/$rev/${scw:-*}
 
