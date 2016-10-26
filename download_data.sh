@@ -28,6 +28,10 @@ if [ "$data_kind" == "nrt" ]; then
     mkdir -vp $scw_data_root/$rev
     cd $scw_data_root/$rev
     #chmod -R +w $data_dir/$rev
+    
+    if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
+        exit
+    fi
 
     wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
     wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw 
@@ -59,6 +63,10 @@ else
     mkdir -p $scw_data_root/$rev
     chmod -R +w $scw_data_root/$rev/
     cd $scw_data_root/$rev
+    
+    if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
+        exit
+    fi
 
     pwd
 
