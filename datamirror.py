@@ -3,6 +3,8 @@
 import os
 import tempfile
 
+from dlogging import logger,logging
+
 def ensure_data(kind="any",scw=None):
     
 
@@ -18,6 +20,8 @@ def ensure_data(kind="any",scw=None):
         scw=scw+".001"
     if kind=="nrt":
         scw=scw+".000"
+
+    logger.log(logging.INFO,"updating data for %s %s"%(kind,scw))
     
     tf = tempfile.NamedTemporaryFile(delete=False)
     cmd="filelist=%s data_kind=%s download_data.sh %s %s"%(tf.name,kind,scw[:4],scw)
