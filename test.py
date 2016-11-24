@@ -4,7 +4,7 @@ class DataMirrorTest(unittest.TestCase):
 
     def test_download(self):
         import datamirror
-        datamirror.ensure_data(scw="134100220010.001")
+        datamirror.ensure_data(scw="175000220010.001")
         self.assertEqual('foo'.upper(), 'FOO')
 
    # def test_isupper(self):
