@@ -72,12 +72,20 @@ else
     
 
     pwd
+    
+    flag=${scw}.done
+    if [ -s $flag ]; then
+        echo "found flag: `cat $flag`"
+    else
+        wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
+        wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
+        #wget -m -nH --cut-dirs=5 ftp://isdcarc.unige.ch/arc/FTP/arc_distr/CONS/public/scw/$rev/${scw:-*}
 
-    wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
-    wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
-    #wget -m -nH --cut-dirs=5 ftp://isdcarc.unige.ch/arc/FTP/arc_distr/CONS/public/scw/$rev/${scw:-*}
+        #wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/scw/$rev/${scw:-*}/*
 
-    #wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/scw/$rev/${scw:-*}/*
+        date > $flag
+    fi
+
 
 
     mkdir -p $local_data_root/aux/adp                                                                                                                                                  
@@ -86,8 +94,15 @@ else
 
     ls -ld .
 
-    #wget -m -nH --cut-dirs=4 ftp://$secret@isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
-    wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
+    flag=${rev}.done
+    if [ -s $flag ]; then
+        echo "found flag: `cat $flag`"
+    else
+        #wget -m -nH --cut-dirs=4 ftp://$secret@isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
+        wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
+
+        date > $flag
+    fi
 
     echo "Download of data from revolution ${rev} finished"
     echo "-------------------------------------------------------"
