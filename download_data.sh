@@ -34,6 +34,8 @@ if [ "$data_kind" == "nrt" ]; then
     #chmod -R +w $data_dir/$rev
     
 
+    echo wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
+
     wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
     wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
@@ -73,10 +75,11 @@ else
 
     pwd
     
-    flag=${scw}.done
+    flag=.done.${scw}
     if [ -s $flag ]; then
         echo "found flag: `cat $flag`"
     else
+        echo wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
         wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
         wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
         #wget -m -nH --cut-dirs=5 ftp://isdcarc.unige.ch/arc/FTP/arc_distr/CONS/public/scw/$rev/${scw:-*}
@@ -94,7 +97,7 @@ else
 
     ls -ld .
 
-    flag=${rev}.done
+    flag=.done.${rev}
     if [ -s $flag ]; then
         echo "found flag: `cat $flag`"
     else
