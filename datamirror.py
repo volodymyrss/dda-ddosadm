@@ -9,6 +9,14 @@ try:
 except ImportError:
     print "no dlogging"
 
+    import logging
+    logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+    logger = logging.getLogger()
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    logger.addHandler(consoleHandler)
+
 def ensure_data(kind="any",scw=None):
     
 
