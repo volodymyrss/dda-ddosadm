@@ -9,108 +9,51 @@ data_kind=${data_kind:-cons}
 
 echo "requested: rev: $rev scw: $scw"
 
-secret=`cat $HOME/.secret`
+scw_data_root="$local_data_root/scw"
 
 if [ "$data_kind" == "nrt" ]; then
-
-    scw_data_root="$local_data_root/scw/"
-    remote_data_root="pvphase/nrt/ops/scw/"
-
-    mkdir -p $scw_data_root
-    cd $scw_data_root
-
-    echo "Data will be downloaded in:"
-    pwd
-
-    echo "-------------------------------------------------------"
-    echo "Starting download of data from ${remote_data_root}"
-    
-    if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
-        exit
-    fi
-
-    mkdir -vp $scw_data_root/$rev
-    cd $scw_data_root/$rev
-    #chmod -R +w $data_dir/$rev
-    
-
-    echo wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
-
-    wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.000
-    wget -m -nH --cut-dirs=6 ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw 
-
-    mkdir -p $scw_data_root/../aux/adp
-    cd $scw_data_root/../aux/adp
-    chmod +w .
-
-    echo "will get revdir..."
-    wget -m -nH --cut-dirs=7 ftp://$secret@isdcarc.unige.ch/arc/FTP/arc_distr/NRT/public/aux/adp/${rev}.000
-
-
-    echo "Download of data from revolution ${rev} finished"
-    echo "-------------------------------------------------------"
-
+    remote_data_root="pvphase/nrt/ops/scw"
+    remote_aux_root="arc/FTP/arc_distr/NRT/public"
+    scwver="000"
+    cd_scw=6
+    cd_aux=7
 else
-    echo "Data will be downloaded in:"
-
-    scw_data_root=$local_data_root/scw/
-    mkdir -p $scw_data_root
-    cd $scw_data_root
-    pwd
-
-    remote_data_root="/arc/rev_3/scw/"
-
-    echo "-------------------------------------------------------"
-    echo "Starting download of data from ${remote_data_root}"
-    
-   # ls -l $scw_data_root/$rev/$scw/isgri_events.fits*
-    if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
-        exit
-    fi
-
-    mkdir -p $scw_data_root/$rev
-    chmod -R +w $scw_data_root/$rev/
-    cd $scw_data_root/$rev
-    
-
-    pwd
-    
-    flag=.done.${scw}
-    if [ -s $flag ]; then
-        echo "found flag: `cat $flag`"
-    else
-        echo wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
-        wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/rev.001
-        wget -m -nH --cut-dirs=6  ftp://$secret@isdcarc.unige.ch/$remote_data_root/$rev/$scw
-        #wget -m -nH --cut-dirs=5 ftp://isdcarc.unige.ch/arc/FTP/arc_distr/CONS/public/scw/$rev/${scw:-*}
-
-        #wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/scw/$rev/${scw:-*}/*
-
-        date > $flag
-    fi
-
-
-
-    mkdir -p $local_data_root/aux/adp                                                                                                                                                  
-    cd $local_data_root/aux/adp                                                                                                                                                  
-    chmod +w .
-
-    ls -ld .
-
-    flag=.done.${rev}
-    if [ -s $flag ]; then
-        echo "found flag: `cat $flag`"
-    else
-        #wget -m -nH --cut-dirs=4 ftp://$secret@isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
-        wget -m -nH --cut-dirs=4 ftp://isdcarc.unige.ch/arc/rev_3/aux/adp/${rev}.001
-
-        date > $flag
-    fi
-
-    echo "Download of data from revolution ${rev} finished"
-    echo "-------------------------------------------------------"
-
+    remote_data_root="arc/rev_3/scw"
+    remote_aux_root="arc/rev_3"
+    scwver="001"
+    cd_scw=4
+    cd_aux=4
 fi
+
+mkdir -p $scw_data_root
+cd $scw_data_root
+
+echo "Data will be downloaded in:"
+pwd
+
+echo "-------------------------------------------------------"
+echo "Starting download of data from ${remote_data_root}"
+
+#if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
+#    exit
+#fi
+
+mkdir -vp $scw_data_root/$rev
+cd $scw_data_root/$rev
+
+wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
+
+mkdir -p $scw_data_root/../aux/adp
+cd $scw_data_root/../aux/adp
+chmod +w .
+
+echo "will get revdir..."
+
+wget -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
+
+
+echo "Download of data from revolution ${rev} finished"
+echo "-------------------------------------------------------"
 
 ls -l $scw_data_root/$rev/$scw/* 
 
