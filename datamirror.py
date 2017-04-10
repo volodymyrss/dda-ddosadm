@@ -3,9 +3,11 @@
 import os
 import tempfile
 import datamirror
-import integralclient
 
-from dlogging import logger,logging
+try:
+    from dlogging import logger,logging
+except ImportError:
+    print "no dlogging"
 
 def ensure_data(kind="any",scw=None):
     
@@ -40,24 +42,27 @@ def ensure_data(kind="any",scw=None):
         return None
 
 
-def ensure_data_range(t1,t2,kind="any"):
-    ijd1=float(integralclient.converttime("ANY",t1,"IJD"))
-    ijd2=float(integralclient.converttime("ANY",t2,"IJD"))
+try:
+    import integralclient
+    def ensure_data_range(t1,t2,kind="any"):
+        ijd1=float(integralclient.converttime("ANY",t1,"IJD"))
+        ijd2=float(integralclient.converttime("ANY",t2,"IJD"))
 
-    i=ijd1
-    
-    scws=[]
-    while i<ijd2:
-        scw=integralclient.converttime("IJD",i,"SCWID")
-        if len(scws)>0 and scws[-1]!=scw:
-            scws.append(scw)
+        i=ijd1
+        
+        scws=[]
+        while i<ijd2:
+            scw=integralclient.converttime("IJD",i,"SCWID")
+            if len(scws)>0 and scws[-1]!=scw:
+                scws.append(scw)
 
-        x,i=map(float,integralclient.converttime("SCWID",scw,"IJD").split(":"))
-        print "scw:",scw,x,i,"wait for",ijd2
-        i+=1./24/3600.
+            x,i=map(float,integralclient.converttime("SCWID",scw,"IJD").split(":"))
+            print "scw:",scw,x,i,"wait for",ijd2
+            i+=1./24/3600.
 
-    for scw in scws:
-        ensure_data(kind=kind,scw=scw)
-
+        for scw in scws:
+            ensure_data(kind=kind,scw=scw)
+except ImportError:
+    pass
 
 
