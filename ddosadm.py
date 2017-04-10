@@ -2,6 +2,14 @@ import ddosa
 import datamirror
 import glob
 import os
+import gzip
+
+class AUXADP(ddosa.DataAnalysis):
+    input_rev=ddosa.RevForScW
+
+    def main(self):
+        print self.input_rev.auxadppath
+        print self.input_rev.revdir
 
 class ScWData(ddosa.ScWData):
     cached=True
@@ -25,9 +33,13 @@ class ScWData(ddosa.ScWData):
                 print "found file",fn
                 setattr(self,os.path.basename(fn),ddosa.DataFile(fn))
                 self.scwfilelist.append(fn)
-        
+
+            
 
     def post_restore(self):
         self.scwpath=getattr(self,'swg.fits').cached_path.replace("swg.fits.gz","")
         self.swgpath=self.scwpath+"/swg.fits"
+
+        open(self.scwpath+"/swg.fits","w").write(gzip.open(self.scwpath+"/swg.fits.gz").read())
+
         print "doing post-restore from",self.scwpath

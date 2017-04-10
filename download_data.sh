@@ -41,6 +41,7 @@ echo "Starting download of data from ${remote_data_root}"
 mkdir -vp $scw_data_root/$rev
 cd $scw_data_root/$rev
 
+
 wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
 mkdir -p $scw_data_root/../aux/adp
