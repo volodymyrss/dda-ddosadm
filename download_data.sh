@@ -41,7 +41,8 @@ echo "Starting download of data from ${remote_data_root}"
 mkdir -vp $scw_data_root/$rev
 cd $scw_data_root/$rev
 
-wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
+rm -fv ${rev}_revdir.tgz
+wget  http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
 tar xzvf ${rev}_revdir.tgz
 
 wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
@@ -50,6 +51,7 @@ mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
 chmod +w .
 
+rm -fv ${rev}_auxadpdir.tgz
 wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_auxadpdir.tgz
 tar xzvf ${rev}_auxadpdir.tgz
 
