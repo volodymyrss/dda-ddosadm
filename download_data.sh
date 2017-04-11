@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+#set -euo pipefail
 IFS=$'\n\t'
 
 rev=${1:?}  #revolution rev{$i} ($i: 0-9)
@@ -45,6 +45,7 @@ rm -fv ${rev}_revdir.tgz
 wget  http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
 tar xzvf ${rev}_revdir.tgz
 
+echo "in the "`pwd`
 wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
 mkdir -p $scw_data_root/../aux/adp
@@ -66,3 +67,6 @@ echo "-------------------------------------------------------"
 ls -l $scw_data_root/$rev/$scw/* 
 
 [ "${filelist:-}" == "" ] || (ls $scw_data_root/$rev/$scw/* > $filelist)
+
+[ -s $scw_data_root/$rev/$scw/isgri_events.fits* ] || exit 1
+[ -s $scw_data_root/$rev/$scw/swg.fits* ] || exit 1
