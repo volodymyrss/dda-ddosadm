@@ -33,7 +33,7 @@ class ScWData(ddosa.ScWData):
 
         self.scwfilelist=[]
 
-        if self.store_files.store_files:
+        if self.input_datasourceconfig.store_files:
             print "searching for ScW files:",self.scwpath+"/*"
             for fn in glob.glob(self.scwpath+"/*fits*"):
                 print "found file",fn
