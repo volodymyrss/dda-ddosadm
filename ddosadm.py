@@ -4,18 +4,24 @@ import glob
 import os
 import gzip
 
+class DataSourceConfig(ddosa.DataAnalysis):
+    store_files=True
+
 class AUXADP(ddosa.DataAnalysis):
     input_rev=ddosa.RevForScW
 
     def main(self):
         print self.input_rev.auxadppath
         print self.input_rev.revdir
+        # this is fetched at the same time as scw, should be not
+
 
 class ScWData(ddosa.ScWData):
     cached=True
-    store_files=True
     test_files=False
     datafile_restore_mode="url_in_object"
+
+    input_datasourceconfig=DataSourceConfig
 
     def main(self):
         try:
@@ -27,7 +33,7 @@ class ScWData(ddosa.ScWData):
 
         self.scwfilelist=[]
 
-        if self.store_files:
+        if self.store_files.store_files:
             print "searching for ScW files:",self.scwpath+"/*"
             for fn in glob.glob(self.scwpath+"/*fits*"):
                 print "found file",fn
