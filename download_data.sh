@@ -42,7 +42,7 @@ mkdir -vp $scw_data_root/$rev
 cd $scw_data_root/$rev
 
 rm -fv ${rev}_revdir.tgz
-wget  http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
+wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
 tar xzvf ${rev}_revdir.tgz
 
 echo "in the "`pwd`
@@ -58,7 +58,7 @@ tar xzvf ${rev}_auxadpdir.tgz
 
 echo "will get revdir..."
 
-wget -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
+wget -c -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
 
 
 echo "Download of data from revolution ${rev} finished"
