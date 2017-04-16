@@ -43,9 +43,14 @@ class ScWData(ddosa.ScWData):
             
 
     def post_restore(self):
-        self.scwpath=getattr(self,'swg.fits').cached_path.replace("swg.fits.gz","")
-        self.swgpath=self.scwpath+"/swg.fits"
+        if self.input_datasourceconfig.store_files:
+            scwid=self.input_scwid.str()
+            rev=scwid[:4]
+            self.scwpath=os.environ['INTEGRAL_DATA']+"/scw/"+rev+"/"+scwid
+            self.swgpath=self.scwpath+"/swg.fits"
+            for fn in self.scwfilelist:
+                bfn=os.path.basename(fn)
 
-        open(self.scwpath+"/swg.fits","w").write(gzip.open(self.scwpath+"/swg.fits.gz").read())
+                open(self.scwpath+"/"+bfn,"w").write(getattr(self,bfn).open().read())
 
-        print "doing post-restore from",self.scwpath
+                print "doing post-restore",self.scwpath+"/"+bfn,"from",getattr(self,bfn).get_path()
