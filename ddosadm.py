@@ -20,7 +20,8 @@ class AUXADP(ddosa.DataAnalysis):
 class ScWData(ddosa.ScWData):
     cached=True
     test_files=False
-    datafile_restore_mode="url_in_object"
+   # rename_output_unique=False
+    #datafile_restore_mode="url_in_object"
 
     version="v3"
 
@@ -52,5 +53,7 @@ class ScWData(ddosa.ScWData):
             self.swgpath=self.scwpath+"/swg.fits"
             
             if not os.path.exists(self.scwpath): os.makedirs(self.scwpath)
-            subprocess.check_call(["tar","-C",self.scwpath,"-xvf",self.scwpack.get_path()])
+            cmd=["tar","-C",self.scwpath,"-xvf",os.path.abspath(self.scwpack.get_path())]
+            print "cmd",cmd
+            subprocess.check_call(cmd)
             print "restored scw in",self.scwpath
