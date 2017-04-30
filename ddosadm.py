@@ -22,7 +22,7 @@ class ScWData(ddosa.ScWData):
     test_files=False
     datafile_restore_mode="url_in_object"
 
-    version="v2"
+    version="v3"
 
     input_datasourceconfig=DataSourceConfig
 
