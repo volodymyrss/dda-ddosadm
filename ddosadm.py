@@ -3,6 +3,7 @@ import datamirror
 import glob
 import os
 import gzip
+import subprocess
 
 class DataSourceConfig(ddosa.DataAnalysis):
     store_files=True
@@ -21,6 +22,8 @@ class ScWData(ddosa.ScWData):
     test_files=False
     datafile_restore_mode="url_in_object"
 
+    version="v2"
+
     input_datasourceconfig=DataSourceConfig
 
     def main(self):
@@ -35,10 +38,9 @@ class ScWData(ddosa.ScWData):
 
         if self.input_datasourceconfig.store_files:
             print "searching for ScW files:",self.scwpath+"/*"
-            for fn in glob.glob(self.scwpath+"/*fits*"):
-                print "found file",fn
-                setattr(self,os.path.basename(fn),ddosa.DataFile(fn))
-                self.scwfilelist.append(fn)
+            targz="scw_pack.tar"
+            subprocess.check_call(["tar","-C",self.scwpath,"-cvf",targz,"."])
+            self.scwpack=ddosa.DataFile(targz)
 
             
 
@@ -48,9 +50,7 @@ class ScWData(ddosa.ScWData):
             rev=scwid[:4]
             self.scwpath=os.environ['INTEGRAL_DATA']+"/scw/"+rev+"/"+scwid
             self.swgpath=self.scwpath+"/swg.fits"
-            for fn in self.scwfilelist:
-                bfn=os.path.basename(fn)
-
-                open(self.scwpath+"/"+bfn,"w").write(getattr(self,bfn).open().read())
-
-                print "doing post-restore",self.scwpath+"/"+bfn,"from",getattr(self,bfn).get_path()
+            
+            if not os.path.exists(self.scwpath): os.makedirs(self.scwpath)
+            subprocess.check_call(["tar","-C",self.scwpath,"-xvf",self.scwpack.get_path()])
+            print "restored scw in",self.scwpath
