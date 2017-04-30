@@ -23,7 +23,7 @@ class ScWData(ddosa.ScWData):
    # rename_output_unique=False
     #datafile_restore_mode="url_in_object"
 
-    version="v3"
+    version="v3aux"
 
     input_datasourceconfig=DataSourceConfig
 
@@ -43,6 +43,11 @@ class ScWData(ddosa.ScWData):
             subprocess.check_call(["tar","-C",self.scwpath,"-cvf",targz,"."])
             self.scwpack=ddosa.DataFile(targz)
 
+            scwid=self.input_scwid.str()
+            rev=scwid[:4]
+            auxadpfn=os.environ['INTEGRAL_DATA']+"/aux/adp/"+rev+"_auxadpdir.tgz"
+            self.auxadppack=ddosa.DataFile(auxadpfn)
+
             
 
     def post_restore(self):
@@ -57,3 +62,14 @@ class ScWData(ddosa.ScWData):
             print "cmd",cmd
             subprocess.check_call(cmd)
             print "restored scw in",self.scwpath
+            
+            auxadppath=os.environ['INTEGRAL_DATA']+"/aux/adp"
+            if not os.path.exists(auxadppath): os.makedirs(auxadppath)
+            cmd=["tar","-C",auxadppath,"-xvf",os.path.abspath(self.auxadppack.get_path())]
+            print "cmd",cmd
+
+            try:
+                subprocess.check_call(cmd)
+            except:
+                print "failed!"
+            print "restored aux in",self.auxadppath
