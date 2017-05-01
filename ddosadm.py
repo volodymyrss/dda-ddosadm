@@ -50,6 +50,7 @@ class ScWData(ddosa.ScWData):
             auxadpfn=auxadproot+rev+"_auxadpdir.tgz"
 
             if not os.path.exists(auxadpfn):
+                auxadpfn=rev+"_auxadpdir.tgz"
                 subprocess.check_call(["tar","-C",auxadproot,"-cvf",auxadpfn,rev+".001"])
 
             self.auxadppack=ddosa.DataFile(auxadpfn)
