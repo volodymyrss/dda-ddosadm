@@ -45,7 +45,13 @@ class ScWData(ddosa.ScWData):
 
             scwid=self.input_scwid.str()
             rev=scwid[:4]
-            auxadpfn=os.environ['INTEGRAL_DATA']+"/aux/adp/"+rev+"_auxadpdir.tgz"
+
+            auxadproot=os.environ['INTEGRAL_DATA']+"/aux/adp/"
+            auxadpfn=auxadproot+rev+"_auxadpdir.tgz"
+
+            if not os.path.exists(auxadpfn):
+                subprocess.check_call(["tar","-C",auxadproot,"-cvf",auxadpfn,rev+".001"])
+
             self.auxadppack=ddosa.DataFile(auxadpfn)
 
             
