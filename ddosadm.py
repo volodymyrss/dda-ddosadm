@@ -20,7 +20,7 @@ class AUXADP(ddosa.DataAnalysis):
 class ScWData(ddosa.ScWData):
     cached=True
     test_files=False
-   # rename_output_unique=False
+    rename_output_unique=False
     #datafile_restore_mode="url_in_object"
 
     version="v3aux"
