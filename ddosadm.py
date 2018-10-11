@@ -27,6 +27,10 @@ class ScWData(ddosa.ScWData):
 
     input_datasourceconfig=DataSourceConfig
 
+    @property
+    def integral_data(self):
+        return os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')
+
     def main(self):
         try:
             ddosa.ScWData.main(self)
@@ -46,7 +50,7 @@ class ScWData(ddosa.ScWData):
             scwid=self.input_scwid.str()
             rev=scwid[:4]
 
-            auxadproot=os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')+"/aux/adp/"
+            auxadproot=self.integral_data+"/aux/adp/"
             auxadpfn=auxadproot+rev+"_auxadpdir.tgz"
 
             if not os.path.exists(auxadpfn):
@@ -61,7 +65,7 @@ class ScWData(ddosa.ScWData):
         if self.input_datasourceconfig.store_files:
             scwid=self.input_scwid.str()
             rev=scwid[:4]
-            self.scwpath=os.environ['INTEGRAL_DATA']+"/scw/"+rev+"/"+scwid
+            self.scwpath=self.integral_data+"/scw/"+rev+"/"+scwid
             self.swgpath=self.scwpath+"/swg.fits"
             
             if not os.path.exists(self.scwpath): os.makedirs(self.scwpath)
@@ -70,7 +74,7 @@ class ScWData(ddosa.ScWData):
             subprocess.check_call(cmd)
             print "restored scw in",self.scwpath
             
-            auxadppath=os.environ['INTEGRAL_DATA']+"/aux/adp"
+            auxadppath=self.integral_data+"/aux/adp"
             if not os.path.exists(auxadppath): os.makedirs(auxadppath)
             cmd=["tar","-C",auxadppath,"-xvf",os.path.abspath(self.auxadppack.get_path())]
             print "cmd",cmd
