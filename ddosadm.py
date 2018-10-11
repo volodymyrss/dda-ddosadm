@@ -80,3 +80,45 @@ class ScWData(ddosa.ScWData):
             except:
                 print "failed!"
             print "restored aux in",self.auxadppath
+
+class ICRoot(ddosa.DataAnalysis):
+    input="standard_IC"
+
+    cached=False # level!
+
+    schema_hidden=True
+    version="v1"
+        
+    def validate_ic(self):
+        if not os.path.exists(self.icroot+"/idx/ic_master_file.fits"):
+            return False
+
+        return True
+            
+    def update_ic(self):
+        print("updating IC...")
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod",self.icroot])
+
+    def main(self):
+        self.icroot=os.environ.get('CURRENT_IC','/data/ic_tree_current')
+
+        if not self.validate_ic():
+            print("no IC found!")
+        
+            self.update_ic()
+            
+
+        self.icindex=self.icroot+"/idx/ic/ic_master_file.fits[1]"
+
+        print('current IC:',self.icroot)
+
+
+class IBIS_ICRoot(ddosa.DataAnalysis):
+    input_icroot=ICRoot
+    
+    cached=False # level!
+
+    def main(self):
+        self.ibisicroot=self.input_icroot.icroot+"/ic/ibis"
+        print("current IBIS ic root is:"),self.ibisicroot
+
