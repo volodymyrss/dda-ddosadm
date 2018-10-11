@@ -46,7 +46,7 @@ class ScWData(ddosa.ScWData):
             scwid=self.input_scwid.str()
             rev=scwid[:4]
 
-            auxadproot=os.environ['INTEGRAL_DATA']+"/aux/adp/"
+            auxadproot=os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')+"/aux/adp/"
             auxadpfn=auxadproot+rev+"_auxadpdir.tgz"
 
             if not os.path.exists(auxadpfn):
