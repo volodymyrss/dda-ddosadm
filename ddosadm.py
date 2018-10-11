@@ -97,7 +97,8 @@ class ICRoot(ddosa.DataAnalysis):
             
     def update_ic(self):
         print("updating IC...")
-        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod",self.icroot])
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod/ic/",self.icroot+"/ic/"])
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod/idx/",self.icroot+"/idx/"])
 
     def main(self):
         self.icroot=os.environ.get('CURRENT_IC','/data/ic_tree_current')
