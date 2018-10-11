@@ -16,6 +16,8 @@ class AUXADP(ddosa.DataAnalysis):
         print self.input_rev.revdir
         # this is fetched at the same time as scw, should be not
 
+        if self.aux
+
 
 class ScWData(ddosa.ScWData):
     cached=True
@@ -31,6 +33,16 @@ class ScWData(ddosa.ScWData):
     def integral_data(self):
         return os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')
 
+    def check_aux_adp_ref((self):
+        if not os.path.exists(self.integral_data+"/aux/adp/ref/"):
+            return False
+
+        return True
+            
+    def update_aux_adp_ref(self):
+        print("updating AUX ADP REF...")
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/NRT/public/aux/adp/ref/",self.integral_data+"/aux/adp/ref"])
+
     def main(self):
         try:
             ddosa.ScWData.main(self)
@@ -40,6 +52,11 @@ class ScWData(ddosa.ScWData):
             ddosa.ScWData.main(self)
 
         self.scwfilelist=[]
+
+        if not self.check_aux_adp_ref():
+            print("updating aux adp ref")
+            self.update_aux_adp_ref()
+            
 
         if self.input_datasourceconfig.store_files:
             print "searching for ScW files:",self.scwpath+"/*"
