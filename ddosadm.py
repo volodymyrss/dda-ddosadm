@@ -123,3 +123,32 @@ class IBIS_ICRoot(ddosa.DataAnalysis):
         self.ibisicroot=self.input_icroot.icroot+"/ic/ibis"
         print("current IBIS ic root is:"),self.ibisicroot
 
+
+class GRcat(ddosa.DataAnalysis):
+    cached=False # again, this is transient-level cache
+
+    refcat_version=41
+
+    def get_version(self):
+        return self.get_signature()+"."+self.version+".%i"%self.refcat_version
+
+    def check(self):
+        if os.path.exists(self.cat):
+            return True
+        return False
+
+    def update(self):
+        subprocess.check_call(["wget","https://www.isdc.unige.ch/integral/download/osa/cat/osa_cat-41.0.tar.gz","-O","/data/resources/osa_cat-41.0.tar.gz"])
+        subprocess.check_call(["tar","xvzf","osa_cat-41.0.tar.gz"],cwd="/data/resources/")
+
+    def main(self):
+        self.cat="/data/resources/osa_cat-{0:d}.0/cat/hec/gnrl_refr_cat_{0:04d}.fits".format(self.refcat_version)
+        print("searching for local cat as",self.cat)
+
+        if not self.check():
+            print("no catalog here")
+            self.update()
+            if not self.check():
+                raise RuntimeError("failed update properly!")
+    
+
