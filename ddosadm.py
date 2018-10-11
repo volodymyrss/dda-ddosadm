@@ -31,7 +31,7 @@ class ScWData(ddosa.ScWData):
     def integral_data(self):
         return os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')
 
-    def check_aux_adp_ref((self):
+    def check_aux_adp_ref(self):
         if not os.path.exists(self.integral_data+"/aux/adp/ref/"):
             return False
 
