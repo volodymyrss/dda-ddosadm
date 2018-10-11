@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import os
+import inspect
 import tempfile
 import datamirror
 
@@ -34,9 +35,11 @@ def ensure_data(kind="any",scw=None):
         scw=scw+".000"
 
     logger.log(logging.INFO,"updating data for %s %s"%(kind,scw))
+
+    script_location=os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     
     tf = tempfile.NamedTemporaryFile(delete=False)
-    cmd="filelist=%s data_kind=%s download_data.sh %s %s"%(tf.name,kind,scw[:4],scw)
+    cmd="filelist=%s data_kind=%s bash %s/download_data.sh %s %s"%(tf.name,kind,script_location,scw[:4],scw)
     print("command:",cmd)
     os.system(cmd)
 
