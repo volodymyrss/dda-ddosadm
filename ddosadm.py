@@ -16,8 +16,6 @@ class AUXADP(ddosa.DataAnalysis):
         print self.input_rev.revdir
         # this is fetched at the same time as scw, should be not
 
-        if self.aux
-
 
 class ScWData(ddosa.ScWData):
     cached=True
