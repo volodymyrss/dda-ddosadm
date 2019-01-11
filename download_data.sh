@@ -41,24 +41,27 @@ echo "Starting download of data from ${remote_data_root}"
 mkdir -vp $scw_data_root/$rev
 cd $scw_data_root/$rev
 
-rm -fv ${rev}_revdir.tgz
-wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
-tar xzvf ${rev}_revdir.tgz
+#rm -fv ${rev}_revdir.tgz
+#wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
+#tar xzvf ${rev}_revdir.tgz
 
 echo "in the "`pwd`
-wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
+
+#wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
+rsync -avu savchenk@login01.astro.unige.ch:/isdc/pvphase/nrt/ops/scw/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
+rsync -avu savchenk@login01.astro.unige.ch:/isdc/pvphase/nrt/ops/scw/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
 
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
 chmod +w .
 
-rm -fv ${rev}_auxadpdir.tgz
-wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_auxadpdir.tgz
-tar xzvf ${rev}_auxadpdir.tgz
+#rm -fv ${rev}_auxadpdir.tgz
+#wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_auxadpdir.tgz
+#tar xzvf ${rev}_auxadpdir.tgz
 
 echo "will get revdir..."
 
-wget -c -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
+#wget -c -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
 
 
 echo "Download of data from revolution ${rev} finished"
