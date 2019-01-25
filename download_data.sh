@@ -2,6 +2,8 @@
 #set -euo pipefail
 IFS=$'\n\t'
 
+set -x
+
 rev=${1:?}  #revolution rev{$i} ($i: 0-9)
 scw=${2:-*}
 local_data_root=${INTEGRAL_DATA:-${TMPDIR:-/tmp}/integral-data/}
@@ -67,9 +69,9 @@ echo "will get revdir..."
 echo "Download of data from revolution ${rev} finished"
 echo "-------------------------------------------------------"
 
-ls -l $scw_data_root/$rev/$scw/* 
+ls -l $scw_data_root/$rev/$scw*/* 
 
-[ "${filelist:-}" == "" ] || (ls $scw_data_root/$rev/$scw/* > $filelist)
+[ "${filelist:-}" == "" ] || (ls $scw_data_root/$rev/$scw*/* > $filelist)
 
-[ -s $scw_data_root/$rev/$scw/isgri_events.fits* ] || exit 1
-[ -s $scw_data_root/$rev/$scw/swg.fits* ] || exit 1
+[ -s $scw_data_root/$rev/$scw*/isgri_events.fits* ] || exit 1
+[ -s $scw_data_root/$rev/$scw*/swg.fits* ] || exit 1
