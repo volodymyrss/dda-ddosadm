@@ -27,6 +27,20 @@ class ScWData(ddosa.ScWData):
 
     input_datasourceconfig=DataSourceConfig
 
+    @property
+    def integral_data(self):
+        return os.environ.get('INTEGRAL_DATA','/isdc/arc/rev_3/')
+
+    def check_aux_adp_ref(self):
+        if not os.path.exists(self.integral_data+"/aux/adp/ref/"):
+            return False
+
+        return True
+            
+    def update_aux_adp_ref(self):
+        print("updating AUX ADP REF...")
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/NRT/public/aux/adp/ref/",self.integral_data+"/aux/adp/ref"])
+
     def main(self):
         try:
             ddosa.ScWData.main(self)
@@ -37,6 +51,11 @@ class ScWData(ddosa.ScWData):
 
         self.scwfilelist=[]
 
+        if not self.check_aux_adp_ref():
+            print("updating aux adp ref")
+            self.update_aux_adp_ref()
+            
+
         if self.input_datasourceconfig.store_files:
             print "searching for ScW files:",self.scwpath+"/*"
             targz="scw_pack.tar"
@@ -46,7 +65,7 @@ class ScWData(ddosa.ScWData):
             scwid=self.input_scwid.str()
             rev=scwid[:4]
 
-            auxadproot=os.environ['INTEGRAL_DATA']+"/aux/adp/"
+            auxadproot=self.integral_data+"/aux/adp/"
             auxadpfn=auxadproot+rev+"_auxadpdir.tgz"
 
             if not os.path.exists(auxadpfn):
@@ -61,7 +80,7 @@ class ScWData(ddosa.ScWData):
         if self.input_datasourceconfig.store_files:
             scwid=self.input_scwid.str()
             rev=scwid[:4]
-            self.scwpath=os.environ['INTEGRAL_DATA']+"/scw/"+rev+"/"+scwid
+            self.scwpath=self.integral_data+"/scw/"+rev+"/"+scwid
             self.swgpath=self.scwpath+"/swg.fits"
             
             if not os.path.exists(self.scwpath): os.makedirs(self.scwpath)
@@ -70,7 +89,7 @@ class ScWData(ddosa.ScWData):
             subprocess.check_call(cmd)
             print "restored scw in",self.scwpath
             
-            auxadppath=os.environ['INTEGRAL_DATA']+"/aux/adp"
+            auxadppath=self.integral_data+"/aux/adp"
             if not os.path.exists(auxadppath): os.makedirs(auxadppath)
             cmd=["tar","-C",auxadppath,"-xvf",os.path.abspath(self.auxadppack.get_path())]
             print "cmd",cmd
@@ -80,3 +99,75 @@ class ScWData(ddosa.ScWData):
             except:
                 print "failed!"
             print "restored aux in",self.auxadppath
+
+class ICRoot(ddosa.DataAnalysis):
+    input="standard_IC"
+
+    cached=False # level!
+
+    schema_hidden=True
+    version="v1"
+        
+    def validate_ic(self):
+        if not os.path.exists(self.icroot+"/idx/ic_master_file.fits"):
+            return False
+
+        return True
+            
+    def update_ic(self):
+        print("updating IC...")
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod/ic/",self.icroot+"/ic/"])
+        subprocess.check_call(["rsync","-Lzrtv","isdcarc.unige.ch::arc/FTP/arc_distr/ic_tree/prod/idx/",self.icroot+"/idx/"])
+
+    def main(self):
+        self.icroot=os.environ.get('CURRENT_IC','/data/ic_tree_current')
+
+        if not self.validate_ic():
+            print("no IC found!")
+        
+            self.update_ic()
+            
+
+        self.icindex=self.icroot+"/idx/ic/ic_master_file.fits[1]"
+
+        print('current IC:',self.icroot)
+
+
+class IBIS_ICRoot(ddosa.DataAnalysis):
+    input_icroot=ICRoot
+    
+    cached=False # level!
+
+    def main(self):
+        self.ibisicroot=self.input_icroot.icroot+"/ic/ibis"
+        print("current IBIS ic root is:"),self.ibisicroot
+
+
+class GRcat(ddosa.DataAnalysis):
+    cached=False # again, this is transient-level cache
+
+    refcat_version=41
+
+    def get_version(self):
+        return self.get_signature()+"."+self.version+".%i"%self.refcat_version
+
+    def check(self):
+        if os.path.exists(self.cat):
+            return True
+        return False
+
+    def update(self):
+        subprocess.check_call(["wget","https://www.isdc.unige.ch/integral/download/osa/cat/osa_cat-41.0.tar.gz","-O","/data/resources/osa_cat-41.0.tar.gz"])
+        subprocess.check_call(["tar","xvzf","osa_cat-41.0.tar.gz"],cwd="/data/resources/")
+
+    def main(self):
+        self.cat="/data/resources/osa_cat-{0:d}.0/cat/hec/gnrl_refr_cat_{0:04d}.fits".format(self.refcat_version)
+        print("searching for local cat as",self.cat)
+
+        if not self.check():
+            print("no catalog here")
+            self.update()
+            if not self.check():
+                raise RuntimeError("failed update properly!")
+    
+
