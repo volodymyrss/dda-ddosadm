@@ -39,7 +39,7 @@ def ensure_data(kind="any",scw=None):
     script_location=os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     
     tf = tempfile.NamedTemporaryFile(delete=False)
-    cmd="filelist=%s data_kind=%s bash %s/download_data.sh %s %s"%(tf.name,kind,script_location,scw[:4],scw)
+    cmd="filelist=%s data_kind=%s bash /home/integral/bin/download_data.sh %s %s"%(tf.name,kind,scw[:4],scw[:12])
     print("command:",cmd)
     os.system(cmd)
 
@@ -66,6 +66,8 @@ try:
             scw=integralclient.converttime("IJD",i,"SCWID")
             if len(scws)>0 and scws[-1]!=scw:
                 scws.append(scw)
+        
+            ensure_data(kind=kind,scw=scw)
 
             x,i=map(float,integralclient.converttime("SCWID",scw,"IJD").split(":"))
             print "scw:",scw,x,i,"wait for",ijd2

@@ -49,9 +49,11 @@ cd $scw_data_root/$rev
 
 echo "in the "`pwd`
 
+export ssh_access_point=${ssh_access_point:-savchenk@login01.astro.unige.ch}
+
 #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
-rsync -avu savchenk@login01.astro.unige.ch:/isdc/pvphase/nrt/ops/scw/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
-rsync -avu savchenk@login01.astro.unige.ch:/isdc/pvphase/nrt/ops/scw/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
+rsync -avu ${ssh_access_point}:/isdc/pvphase/nrt/ops/scw/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
+rsync -avu ${ssh_access_point}:/isdc/pvphase/nrt/ops/scw/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
 
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
