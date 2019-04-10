@@ -11,6 +11,7 @@ data_kind=${data_kind:-cons}
 
 echo "requested: rev: $rev scw: $scw with data kind $data_kind"
 
+
 scw_data_root="$local_data_root/scw"
 
 if [ "$data_kind" == "nrt" ]; then
@@ -29,6 +30,12 @@ fi
 
 mkdir -p $scw_data_root
 cd $scw_data_root
+
+[ -s $scw_data_root/$rev/$scw*/isgri_events.fits* ] && [ -s $scw_data_root/$rev/$scw*/swg.fits* ] && {
+    echo "already found data"
+    exit 0
+}
+
 
 echo "Data will be downloaded in:"
 pwd
