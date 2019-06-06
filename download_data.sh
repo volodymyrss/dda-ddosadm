@@ -56,11 +56,13 @@ cd $scw_data_root/$rev
 
 echo "in the "`pwd`
 
-export ssh_access_point=${ssh_access_point:-savchenk@login02.astro.unige.ch}
+export ssh_access_point=${ssh_access_point:-savchenk@isdc-in01}
 
 #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
 rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
+
+rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/
 
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
