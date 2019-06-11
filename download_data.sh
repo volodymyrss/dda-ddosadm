@@ -64,6 +64,8 @@ rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver}
 
 rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/
 
+chmod +rX -R /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev} /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
+
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
 chmod +w .
