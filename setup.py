@@ -1,7 +1,7 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
-    name='ddosadm',
+    name='integral-data-mirror',
     version='1.0',
     py_modules=["ddosadm","datamirror"],
     scripts=["download_data.sh"],
