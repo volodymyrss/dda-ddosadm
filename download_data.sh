@@ -4,13 +4,14 @@ IFS=$'\n\t'
 
 set -x
 
-rev=${1:?}  #revolution rev{$i} ($i: 0-9)
+rev=${1:?revolution}  #revolution rev{$i} ($i: 0-9)
 scw=${2:-*}
 local_data_root=${INTEGRAL_DATA:-${TMPDIR:-/tmp}/integral/data/rep_base_prod}
 data_kind=${data_kind:-cons}
 
-echo "requested: rev: $rev scw: $scw with data kind $data_kind"
+echo "local data root: \"$local_data_root\""
 
+echo "requested: rev: $rev scw: $scw with data kind $data_kind"
 
 scw_data_root="$local_data_root/scw"
 
@@ -59,12 +60,12 @@ echo "in the "`pwd`
 export ssh_access_point=${ssh_access_point:-savchenk@isdc-in01}
 
 #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
-rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
-rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
+rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ $scw_data_root/${rev}/rev.${scwver}/
+rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} $scw_data_root/${rev}
 
-rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/
+rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ $local_data_root/aux/adp/${rev}.${scwver}/
 
-chmod +rX -R /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev} /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
+chmod +rX -R $local_data_root/aux/adp/${rev}.${scwver}/ $local_data_root/scw/${rev} $local_data_root/scw/${rev}/rev.${scwver}/
 
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
