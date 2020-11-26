@@ -60,6 +60,8 @@ export ssh_access_point=${ssh_access_point:-savchenk@login01.astro.unige.ch}
 
 #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
+rsync -avu --exclude '*revno_*_log*' ${ssh_access_point}:/isdc/arc/rev_3/aux/adp/ref/ $local_data_root/aux/adp/ref/
+
 echo "will get revdir..."
 rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ $local_data_root/scw/${rev}/rev.${scwver}/
 rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} $local_data_root/scw/${rev}
