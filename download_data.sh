@@ -56,15 +56,17 @@ cd $scw_data_root/$rev
 
 echo "in the "`pwd`
 
-export ssh_access_point=${ssh_access_point:-savchenk@isdc-in01}
+export ssh_access_point=${ssh_access_point:-savchenk@login01.astro.unige.ch}
 
 #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
-rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
-rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} /home/integral/data/rep_base_prod/scw/${rev}
 
-rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/
+echo "will get revdir..."
+rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ $local_data_root/scw/${rev}/rev.${scwver}/
+rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} $local_data_root/scw/${rev}
 
-chmod +rX -R /home/integral/data/rep_base_prod/aux/adp/${rev}.${scwver}/ /home/integral/data/rep_base_prod/scw/${rev} /home/integral/data/rep_base_prod/scw/${rev}/rev.${scwver}/
+rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ $local_data_root/aux/adp/${rev}.${scwver}/
+
+chmod +rX -R $local_data_root/aux/adp/${rev}.${scwver}/ $local_data_root/scw/${rev} $local_data_root/scw/${rev}/rev.${scwver}/
 
 mkdir -p $scw_data_root/../aux/adp
 cd $scw_data_root/../aux/adp
@@ -74,7 +76,6 @@ chmod +w .
 #wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_auxadpdir.tgz
 #tar xzvf ${rev}_auxadpdir.tgz
 
-echo "will get revdir..."
 
 #wget -c -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
 
