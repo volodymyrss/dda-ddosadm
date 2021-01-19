@@ -4,7 +4,28 @@ IFS=$'\n\t'
 
 set -x
 
-rev=${1:?}  #revolution rev{$i} ($i: 0-9)
+export lockfile=$HOME/isdc-download-lock
+
+function lock() {
+	while [ -s $lockfile ]; do
+		echo "found lockfile, waiting..."
+		ls -l $lockfile
+		sleep 1
+	done
+	echo $$ > $lockfile
+}
+
+function unlock() {
+	rm -fv $lockfile
+}
+
+lock
+
+trap unlock INT
+trap unlock TERM
+trap unlock EXIT
+
+rev=${1:?revolution}  
 scw=${2:-*}
 local_data_root=${INTEGRAL_DATA:-${TMPDIR:-/tmp}/integral/data/rep_base_prod}
 data_kind=${data_kind:-cons}
@@ -89,5 +110,9 @@ ls -l $scw_data_root/$rev/$scw*/*
 
 [ "${filelist:-}" == "" ] || (ls $scw_data_root/$rev/$scw*/* > $filelist)
 
+unlock
+
 [ -s $scw_data_root/$rev/$scw*/isgri_events.fits* ] || exit 1
 [ -s $scw_data_root/$rev/$scw*/swg.fits* ] || exit 1
+
+
