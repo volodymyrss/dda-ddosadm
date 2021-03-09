@@ -215,7 +215,7 @@ function download_ic_isdc_ssh() {
 function download_cat_isdc_ssh() {
     export ssh_access_point=${ssh_access_point:-savchenk@transfer01.isdc.unige.ch}
 
-    echo -e "\033[32m downloading IC\033[0m"
+    echo -e "\033[32m downloading CAT/HEC\033[0m"
     mkdir -pv $local_data_root/cat/hec
     rsync -avu  ${ssh_access_point}:/isdc/arc/rev_3/cat/hec/ $local_data_root/cat/hec/
 
