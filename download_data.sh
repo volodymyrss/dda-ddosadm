@@ -17,6 +17,7 @@ poke_file=${INTEGRAL_DATA}/poke-$$-$RANDOM
 
 if touch $poke_file; then
     echo "can write to $INTEGRAL_DATA, good"
+    rm -fv $poke_file
 else
     echo -e "\033[31mcan NOT write to $INTEGRAL_DATA, NOT good\033[0m"
     exit 1
@@ -190,6 +191,42 @@ function download_isdc_ssh() {
 
 }
 
+function download_ic_isdc_ssh() {
+    icversion=${1:-default}
+
+    export ssh_access_point=${ssh_access_point:-savchenk@transfer01.isdc.unige.ch}
+
+    echo -e "\033[32m downloading IC\033[0m"
+    mkdir -pv $local_data_root/ic/
+    rsync -avu --exclude '*revno_*_log*' ${ssh_access_point}:/unsaved/astro/savchenk/osa11/ic-collection/$icversion/ic/ $local_data_root/ic/
+
+    echo -e "\033[32m downloading IDX\033[0m"
+    mkdir -pv $local_data_root/idx/
+    rsync -avu --exclude '*revno_*_log*' ${ssh_access_point}:/unsaved/astro/savchenk/osa11/ic-collection/$icversion/idx/ $local_data_root/idx/
+
+    chmod +rX -R $local_data_root/{ic,idx}
+
+    mkdir -p $scw_data_root/../aux/adp
+    cd $scw_data_root/../aux/adp
+    chmod +w .
+
+}
+
+function download_cat_isdc_ssh() {
+    export ssh_access_point=${ssh_access_point:-savchenk@transfer01.isdc.unige.ch}
+
+    echo -e "\033[32m downloading IC\033[0m"
+    mkdir -pv $local_data_root/cat/hec
+    rsync -avu  ${ssh_access_point}:/isdc/arc/rev_3/cat/hec/ $local_data_root/cat/hec/
+
+    chmod +rX -R $local_data_root/{ic,idx}
+
+    mkdir -p $scw_data_root/../aux/adp
+    cd $scw_data_root/../aux/adp
+    chmod +w .
+
+}
+
 function download_ftp() {
     echo "not complete"
     #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
@@ -210,7 +247,13 @@ trap unlock INT
 trap unlock TERM
 trap unlock EXIT
 
-download_no_matter_what_it_takes
+if [ "$rev" == "ic" ]; then
+    download_ic_isdc_ssh
+elif [ "$rev" == "cat" ]; then
+    download_cat_isdc_ssh
+else
+    download_no_matter_what_it_takes
+fi
 
 unlock
 
