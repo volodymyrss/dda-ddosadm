@@ -22,8 +22,11 @@ else
     exit 1
 fi
 
-export local_data_root=${INTEGRAL_DATA/integral/data/rep_base_prod}
+export local_data_root=${INTEGRAL_DATA}/
 export scw_data_root="$local_data_root/scw"
+
+echo "local_data_root=${local_data_root}"
+echo "scw_data_root=${scw_data_root}"
 
 export lockfile=$HOME/isdc-download-lock
 
@@ -53,7 +56,8 @@ function download_no_matter_what_it_takes() {
     if [ ${dry_run:-no} == "yes" ]; then
         echo "dry run!"
     else
-        download_heasarc
+       # download_heasarc
+        download_isdc_ssh
 
         echo "Download of data from revolution ${rev} finished"
         echo "-------------------------------------------------------"
@@ -83,7 +87,7 @@ function exit_if_already_have() {
 function download_heasarc() {
     flag=""
 
-    echo "download_heasarc_t_start: $(date +%s)" >> stats.yaml
+    echo -e "\033[31mdownload_heasarc_t_start: $(date +%s)\033[0m" >> stats.yaml
     cd $local_data_root
     
 
@@ -113,6 +117,20 @@ function download_heasarc() {
     cd $INTEGRAL_DATA
 }
 
+function test_isgri_events() {
+    echo "not complete"
+    if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
+        exit 1
+    fi
+}
+    
+function download_aux_bundle() {
+    echo "not complete"
+    rm -fv ${rev}_revdir.tgz
+    wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
+    tar xzvf ${rev}_revdir.tgz
+}
+
 function download_isdc_ssh() {
     if [ "$data_kind" == "nrt" ]; then
         remote_data_root="pvphase/nrt/ops/scw"
@@ -136,30 +154,31 @@ function download_isdc_ssh() {
     echo "-------------------------------------------------------"
     echo "Starting download of data from ${remote_data_root}"
 
-    #if [ -s $scw_data_root/$rev/$scw/isgri_events.fits ] || [ -s $scw_data_root/$rev/$scw/isgri_events.fits.gz ]; then
-    #    exit
-    #fi
 
     mkdir -vp $scw_data_root/$rev
     cd $scw_data_root/$rev
 
-    #rm -fv ${rev}_revdir.tgz
-    #wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_revdir.tgz
-    #tar xzvf ${rev}_revdir.tgz
 
     echo "in the "`pwd`
 
-    export ssh_access_point=${ssh_access_point:-savchenk@login01.astro.unige.ch}
+    export ssh_access_point=${ssh_access_point:-savchenk@transfer01.isdc.unige.ch}
 
-    #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
 
+    echo -e "\033[32m downloading arc/rev_3/aux/adp/ref\033[0m"
+    mkdir -pv $local_data_root/aux/adp/ref
     rsync -avu --exclude '*revno_*_log*' ${ssh_access_point}:/isdc/arc/rev_3/aux/adp/ref/ $local_data_root/aux/adp/ref/
 
-    echo "will get revdir..."
-    rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ $local_data_root/scw/${rev}/rev.${scwver}/
-    rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} $local_data_root/scw/${rev}
+    echo -e "\033[32m downloading ${rev}/rev.${scwver}/\033[0m"
+    mkdir -pv $local_data_root/scw/${rev}/rev.${scwver}/
+    rsync -avu --exclude 'raw' ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/rev.${scwver}/ $local_data_root/scw/${rev}/rev.${scwver}/
 
+    echo -e "\033[32m downloading aux/adp/${rev}.${scwver}\033[0m"
+    mkdir -pv $local_data_root/aux/adp/${rev}.${scwver}/
     rsync -avu ${ssh_access_point}:/isdc/${remote_aux_root}/aux/adp/${rev}.${scwver}/ $local_data_root/aux/adp/${rev}.${scwver}/
+    
+    echo -e "\033[32m downloading ${rev}/${scw}.${scwver}\033[0m"
+    mkdir -pv $local_data_root/scw/${rev}/
+    rsync -avu ${ssh_access_point}:/isdc/${remote_data_root}/${rev}/${scw}.${scwver} $local_data_root/scw/${rev}
 
     chmod +rX -R $local_data_root/aux/adp/${rev}.${scwver}/ $local_data_root/scw/${rev} $local_data_root/scw/${rev}/rev.${scwver}/
 
@@ -167,13 +186,14 @@ function download_isdc_ssh() {
     cd $scw_data_root/../aux/adp
     chmod +w .
 
-    #rm -fv ${rev}_auxadpdir.tgz
-    #wget -c http://www.apc.univ-paris7.fr/Downloads/astrog/savchenk/archive_pack/${rev}_auxadpdir.tgz
-    #tar xzvf ${rev}_auxadpdir.tgz
 
 
+}
+
+function download_ftp() {
+    echo "not complete"
+    #wget -m -nH --reject-regex '.*log.*' -R '*txt' --cut-dirs=${cd_scw} ftp://isdcarc.unige.ch/$remote_data_root/$rev/rev.${scwver} ftp://isdcarc.unige.ch/$remote_data_root/$rev/$scw 
     #wget -c -m -nH --cut-dirs=${cd_aux} -R '*txt' ftp://isdcarc.unige.ch/$remote_aux_root/aux/adp/${rev}.${scwver}
-
 }
 
 function test_at_exit() {
