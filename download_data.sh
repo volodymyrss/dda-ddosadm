@@ -57,8 +57,11 @@ function download_no_matter_what_it_takes() {
     if [ ${dry_run:-no} == "yes" ]; then
         echo "dry run!"
     else
-       # download_heasarc
-        download_isdc_ssh
+        if [ "${DDA_ALLOW_SSH:-no}" == "yes" ]
+            download_isdc_ssh
+        else
+            download_heasarc
+        fi
 
         echo "Download of data from revolution ${rev} finished"
         echo "-------------------------------------------------------"
