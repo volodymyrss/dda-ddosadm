@@ -57,7 +57,7 @@ function download_no_matter_what_it_takes() {
     if [ ${dry_run:-no} == "yes" ]; then
         echo "dry run!"
     else
-        if [ "${DDA_ALLOW_SSH:-no}" == "yes" ]
+        if [ "${DDA_ALLOW_SSH:-no}" == "yes" ]; then
             download_isdc_ssh
         else
             download_heasarc
