@@ -105,8 +105,9 @@ function download_heasarc() {
             # TODO: add expiration? aux/adp/ref will expire sometimes. other things - rarely
         else
             echo -e "\033[1;33m actually downloading ${sub_path}\033[0m"
+            #--show-progress # not in some
             wget \
-                --show-progress -q \
+                -q \
                 --no-parent -nH --no-check-certificate --cut-dirs=3 \
                 -r -l0 -c -N -np -R 'index*' -R '.*log.*' -R '*txt' \
                 -R 'raw' \
