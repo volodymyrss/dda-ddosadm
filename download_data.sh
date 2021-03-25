@@ -108,7 +108,7 @@ function download_heasarc() {
             echo -e "\033[1;33m actually downloading ${sub_path}\033[0m"
 
             wget --help | grep -q '\--show-progress' && \
-                          _PROGRESS_OPT='-q --show-progress' || _PROGRESS_OPT=""
+                          _PROGRESS_OPT='-q --show-progress' || _PROGRESS_OPT="-v"
 
 
             IFS=$' \t\n'
