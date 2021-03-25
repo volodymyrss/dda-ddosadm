@@ -106,14 +106,21 @@ function download_heasarc() {
             # TODO: add expiration? aux/adp/ref will expire sometimes. other things - rarely
         else
             echo -e "\033[1;33m actually downloading ${sub_path}\033[0m"
-            #--show-progress # not in some
+
+            wget --help | grep -q '\--show-progress' && \
+                          _PROGRESS_OPT='-q --show-progress' || _PROGRESS_OPT=""
+
+
+            IFS=$' \t\n'
             wget \
-                -q \
+                $_PROGRESS_OPT \
                 --no-parent -nH --no-check-certificate --cut-dirs=3 \
                 -r -l0 -c -N -np -R 'index*' -R '.*log.*' -R '*txt' \
                 -R 'raw' \
                 -erobots=off --retr-symlinks \
                     https://heasarc.gsfc.nasa.gov/FTP/integral/data/$sub_path/
+            IFS=$'\n\t'
+
             # raw maybe needed, I think not?
             echo "$HOSTNAME $DATE" > $completion_marker
             echo -e "\033[1;32m DONE downloading ${sub_path}\033[0m"
