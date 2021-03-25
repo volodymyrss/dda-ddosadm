@@ -107,6 +107,8 @@ function download_heasarc() {
         else
             echo -e "\033[1;33m actually downloading ${sub_path}\033[0m"
 
+            set -x
+
             wget --help | grep -q '\--show-progress' && \
                           _PROGRESS_OPT='-q --show-progress' || _PROGRESS_OPT="-v"
 
