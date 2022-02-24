@@ -2,6 +2,8 @@
 #set -euo pipefail
 IFS=$'\n\t'
 
+set -x 
+
 set -e -o pipefail
 
 export rev=${1:?revolution}  
@@ -95,8 +97,8 @@ function download_heasarc() {
     cd $local_data_root
     
 
-    #for sub_path in "scw/${rev}/rev.001" "aux/adp/ref" "scw/${rev}/${scw}" "aux/adp/${rev}.001"; do
-    for sub_path in "scw/${rev}/rev.001" "scw/${rev}/${scw}.001" "aux/adp/${rev}.001"; do
+    #for sub_path in "scw/${rev}/rev.001""scw/${rev}/${scw}" "aux/adp/${rev}.001"; do
+    for sub_path in "scw/${rev}/rev.001" "scw/${rev}/${scw}.001" "aux/adp/${rev}.001" "aux/adp/ref" ; do
         echo -e "\033[32m downloading ${sub_path}\033[0m"
 
         completion_marker=${sub_path}/completed
